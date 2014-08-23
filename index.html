@@ -1,0 +1,28 @@
+<html>
+<head>
+<script type='text/javascript' src='data.class.js'></script>
+<script type='text/javascript' src='part.class.js'></script>
+<script type='text/javascript' src='ship.class.js'></script>
+<script type='text/javascript' src='default/game.class.js'></script>
+<script type='text/javascript'>
+var canvas;
+var c;
+var data;
+var game;
+function init() {
+    canvas = document.getElementById('canvas');
+    c = canvas.getContext('2d');
+    data = new class_data();
+    game = new class_game(c);
+    loop();
+}
+function loop() {
+    game.loop(c, 1.0);
+    setTimeout(loop, 10);
+}
+</script>
+</head>
+<body onload='init()' style='margin: 0px;'>
+<canvas id="canvas" width='1200' height='800'></canvas>
+</body>
+</html>
