@@ -5,6 +5,7 @@ function class_data() {
     this.graphics = {};
     this.parts = {};
     this.ships = {};
+    this.shiplist = [];
 }
 
 // Add a ship to list
@@ -13,6 +14,7 @@ class_data.prototype.addship = function(name, parts) {
         console.log("class_data.addship: " + name + " already registered");
         return false;
     }
+    this.shiplist.push(name);
     this.ships[name] = {
         'parts': []
     };

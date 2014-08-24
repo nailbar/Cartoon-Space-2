@@ -3,7 +3,9 @@
 <script type='text/javascript' src='data.class.js'></script>
 <script type='text/javascript' src='part.class.js'></script>
 <script type='text/javascript' src='ship.class.js'></script>
-<script type='text/javascript' src='default/game.class.js'></script>
+<script type='text/javascript' src='camera.class.js'></script>
+<script type='text/javascript' src='game.class.js'></script>
+<script type='text/javascript' src='default/ships.js'></script>
 <script type='text/javascript'>
 var canvas;
 var c;
@@ -13,6 +15,7 @@ function init() {
     canvas = document.getElementById('canvas');
     c = canvas.getContext('2d');
     data = new class_data();
+    default_add_ships();
     game = new class_game(c);
     loop();
 }
