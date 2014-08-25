@@ -26,6 +26,16 @@ function class_ship(name, opts) {
     }
 }
 
+// Human controlled ship
+class_ship.prototype.control = function(controls) {
+    if(controls.thrust) this.thrust = 1.0;
+    else this.thrust = 0.0;
+    
+    this.rotspeed = controls.turn * 0.1;
+    
+//     controls.fire = 0;
+}
+
 // Draw the ship (and calculate ship stats)
 class_ship.prototype.draw = function(context) {
     context.save();

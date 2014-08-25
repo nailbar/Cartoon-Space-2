@@ -1,6 +1,6 @@
 
-// Add default ships
-function default_add_ships() {
+// Add default content
+function init_content() {
     
     // Register parts
     data.addpart("default_hull", "default_hull", "default/hull.png", { 'weight': 4.0 });

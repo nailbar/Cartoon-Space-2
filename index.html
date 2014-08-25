@@ -1,11 +1,12 @@
 <html>
 <head>
-<script type='text/javascript' src='data.class.js'></script>
-<script type='text/javascript' src='part.class.js'></script>
-<script type='text/javascript' src='ship.class.js'></script>
-<script type='text/javascript' src='camera.class.js'></script>
-<script type='text/javascript' src='game.class.js'></script>
-<script type='text/javascript' src='default/ships.js'></script>
+<script type='text/javascript' src='default/data.class.js'></script>
+<script type='text/javascript' src='default/part.class.js'></script>
+<script type='text/javascript' src='default/ship.class.js'></script>
+<script type='text/javascript' src='default/camera.class.js'></script>
+<script type='text/javascript' src='default/controls.class.js'></script>
+<script type='text/javascript' src='default/game.class.js'></script>
+<script type='text/javascript' src='default/content.js'></script>
 <script type='text/javascript'>
 var canvas;
 var c;
@@ -15,7 +16,7 @@ function init() {
     canvas = document.getElementById('canvas');
     c = canvas.getContext('2d');
     data = new class_data();
-    default_add_ships();
+    init_content();
     game = new class_game(c);
     loop();
 }
@@ -23,9 +24,15 @@ function loop() {
     game.loop(c, 1.0);
     setTimeout(loop, 10);
 }
+function keydown(e) {
+    if(game) game.controls.keydown(e);
+}
+function keyup(e) {
+    if(game) game.controls.keyup(e);
+}
 </script>
 </head>
-<body onload='init()' style='margin: 0px;'>
+<body onload='init()' style='margin: 0px;' onkeydown='keydown(event)' onkeyup='keyup(event)'>
 <canvas id="canvas" width='1200' height='800'></canvas>
 </body>
 </html>
