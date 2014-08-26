@@ -27,7 +27,7 @@ class_data.prototype.addfrag = function(name, gname, gpath, opts) {
         console.log("class_data.addfrag: " + name + " already registered");
         return false;
     }
-    this.addgraphic(gname, gpath);
+    if(gname && gpath) this.addgraphic(gname, gpath);
     this.frags[name] = {
         'graphic': gname,
         'type': "particle", // particle, projectile, missile

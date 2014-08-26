@@ -11,7 +11,7 @@ function class_ship(name, opts) {
     this.firesecondary = 0;
     this.totalthrust = 0;
     this.totalweight = 0;
-    this.health = 0;
+    this.health = 1;
     this.parts = [];
     
     // Set ship position
@@ -48,15 +48,33 @@ class_ship.prototype.draw = function(context, speed, frags) {
     this.totalthrust = 0;
     this.totalweight = 0;
     this.health = 0;
+    var tmp = {};
+    
+    // Loop through all parts except destroyed ones
     for(var i = 0; i < this.parts.length; i++) if(!this.parts[i].destroyed) {
+        
+        // Draw all parts that are not about to be destroyed or connected to a part that is destroyed
         if(this.parts[i].health > 0 && !this.parts[this.parts[i].parent].destroyed) {
             this.totalthrust += this.parts[i].getthrust();
             this.totalweight += this.parts[i].getweight();
             this.health += this.parts[i].health;
             if(this.parts[i].load(speed) && this.fireprimary) this.parts[i].fireweapon(this, frags);
             this.parts[i].draw(context, { 'thrust': this.thrust });
+        
+        // Properly destroy a part
         } else {
             this.parts[i].destroyed = 1;
+            tmp.right = { 'x': -this.normal.y, 'y': this.normal.x };
+            tmp.position = {
+                'x': this.position.x + this.normal.x * this.parts[i].position.x + tmp.right.x * this.parts[i].position.y,
+                'y': this.position.y + this.normal.y * this.parts[i].position.x + tmp.right.y * this.parts[i].position.y
+            };
+            frags.push(new class_frag("default_part", tmp.position, {
+                'rotation': this.rotation,
+                'velocity': this.velocity,
+                'rotspeed': this.rotspeed,
+                'graphic': data.parts[this.parts[i].name].graphic
+            }));
         }
     }
     context.restore();

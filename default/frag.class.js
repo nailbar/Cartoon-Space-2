@@ -8,6 +8,7 @@ function class_frag(name, position, opts) {
     this.rotspeed = 0;
     this.normal = { 'x': 0, 'y': 0 };
     this.name = name;
+    this.graphic = "";
     this.time = 100;
     this.idle = 0;
     
@@ -15,11 +16,22 @@ function class_frag(name, position, opts) {
     if(opts) {
         if(opts.velocity) this.velocity = { 'x': opts.velocity.x, 'y': opts.velocity.y };
         if(opts.rotation) this.rotation = opts.rotation;
+        if(opts.rotspeed) this.rotspeed = opts.rotspeed;
+        if(opts.graphic) this.graphic = opts.graphic;
     }
     this.normal = { 'x': Math.cos(this.rotation), 'y': Math.sin(this.rotation) };
     if(data.frags[name].speed) {
-        this.velocity.x += this.normal.x * data.frags[name].speed;
-        this.velocity.y += this.normal.y * data.frags[name].speed;
+        switch(data.frags[name].type) {
+        case "particle":
+            this.velocity.x += (Math.random() * 2.0 - 1.0) * data.frags[name].speed;
+            this.velocity.y += (Math.random() * 2.0 - 1.0) * data.frags[name].speed;
+            this.rotspeed += (Math.random() * 0.02 - 0.01) * data.frags[name].speed;
+            break;
+        case "projectile":
+            this.velocity.x += this.normal.x * data.frags[name].speed;
+            this.velocity.y += this.normal.y * data.frags[name].speed;
+            break;
+        }
     }
     if(data.frags[name].time) this.time = data.frags[name].time;
     if(data.frags[name].idle) this.idle = data.frags[name].idle;
@@ -30,7 +42,8 @@ class_frag.prototype.draw = function(context) {
     context.save();
     context.translate(this.position.x, this.position.y);
     context.rotate(this.rotation);
-    data.drawfrag(context, this.name);
+    if(this.graphic) data.drawgraphic(context, this.graphic);
+    else data.drawfrag(context, this.name);
     context.restore();
 }
 
@@ -42,6 +55,7 @@ class_frag.prototype.move = function(speed) {
     // Movement
     this.position.x += this.velocity.x * speed;
     this.position.y += this.velocity.y * speed;
+    this.rotation += this.rotspeed * speed;
 }
 
 // Hit a ship
@@ -91,70 +105,6 @@ class_frag.prototype.hit = function(ships, frags) {
             }
         }
     }
-
-                    
-//                             
-//                             // Check what part of ship is hit
-//                             pdis = 1000;
-//                             prt = -1;
-//                             for(var u = 0; u < a[i].p.length; u++) if(a[i].p[u].hlt > 0.0 && this.lif > 0) {
-//                                 ppos = {
-//                                     x: a[i].pos.x + a[i].nrm.x * a[i].p[u].x - a[i].nrm.y * a[i].p[u].y,
-//                                     y: a[i].pos.y + a[i].nrm.y * a[i].p[u].x + a[i].nrm.x * a[i].p[u].y
-//                                 };
-//                                 if(a[i].p[u].hlt < 0.2) partid = part.id(a[i].p[u].part + "broken");
-//                                 else partid = part.id(a[i].p[u].part);
-//                                 psiz = (p[partid].width + p[partid].height) / 4.0;
-//                                 pos = {x: this.pos.x - ppos.x, y: this.pos.y - ppos.y};
-//                                 dis = Math.sqrt(pos.x * pos.x + pos.y * pos.y) - psiz;
-//                                 if(dis < psiz && dis < pdis) {
-//                                     prt = u;
-//                                     pdis = dis;
-//                                     pcpos = {x: ppos.x, y: ppos.y};
-//                                 }
-//                             }
-//                             
-//                             // If part is hit, add damage
-//                             if(prt != -1) {
-//                                 switch(this.typ) {
-//                                 case 0: damage = Math.random() + 0.25; break;
-//                                 case 4: damage = Math.random() + 0.4; break;
-//                                 case 5: damage = Math.random() + 0.15; break;
-//                                 }
-//                                 a[i].p[prt].hit += damage;
-//                                 a[i].p[prt].hlt -= damage;
-//                                 if(a[i].p[prt].hlt > 0) this.lif = 0; // Unless part is destroyed the bullet ends here
-//                                 
-//                                 // Create explosion unless part is shield
-//                                 if(a[i].p[prt].part != "shield2" && a[i].p[prt].part != "shield3" && a[i].p[prt].part != "shield4") for(var u = 0; u < 3; u++) b.push(new frag(
-//                                     {x: this.pos.x, y: this.pos.y},
-//                                     Math.random() * 6.3,
-//                                     this.own,
-//                                     1
-//                                 ));
-//                                 
-//                                 // Detatch broken part
-//                                 if(a[i].p[prt].hlt <= 0.0) {
-//                                     b.push(new frag(
-//                                         {x: pcpos.x, y: pcpos.y},
-//                                         a[i].rot,
-//                                         this.own,
-//                                         3, a[i].p[prt].part,
-//                                         a[i].del + Math.random() * 0.2 - 0.1,
-//                                         {x: a[i].spd.x + Math.random() * 8.0 - 4.0, y: a[i].spd.y + Math.random() * 8.0 - 4.0}
-//                                     ));
-//                                     a[i].p[prt].hlt = 0;
-//                                 }
-//                                 
-//                                 // If owner is player and ship it is enemy of player, count damage as score
-//                                 if(this.own == camid && hascontrol) if(a[i].col != a[camid].col) {
-//                                     hud.score += Math.floor(damage * 10.0);
-//                                     if(hud.score > hud.best_score) hud.best_score = hud.score;
-//                                 }
-//                             }
-//                         }
-//                     }
-//                 }
 }
 
 

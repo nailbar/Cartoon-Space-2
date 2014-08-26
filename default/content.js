@@ -3,6 +3,7 @@
 function init_content() {
     
     // Register frags
+    data.addfrag("default_part", "", "", { 'speed': 5.0, 'time': 200.0 }); // This is for displaying lost ship parts
     data.addfrag("default_blast", "default_blast", "default/blast.png", {
         'type': "projectile",
         'time': 100.0,

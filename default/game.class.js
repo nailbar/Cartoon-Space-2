@@ -40,11 +40,18 @@ class_game.prototype.loop = function(context, speed) {
         // Draw ship (and do part calculations)
         this.ships[i].draw(context, speed, this.frags);
         
-        // Control ship
+        // Control ship you're looking at
         if(this.camera.ship_id == i) this.ships[i].control(this.controls);
         
         // Move ship
         this.ships[i].move(speed);
+        
+        // Remove dead ships
+        if(this.ships[i].health <= 0) {
+            if(this.camera.ship_id > i) this.camera.ship_id--;
+            this.ships.splice(i, 1);
+            i--;
+        }
     }
     
     // Loop through frags
