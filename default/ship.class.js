@@ -11,6 +11,7 @@ function class_ship(name, opts) {
     this.firesecondary = 0;
     this.totalthrust = 0;
     this.totalweight = 0;
+    this.health = 0;
     this.parts = [];
     
     // Set ship position
@@ -23,7 +24,8 @@ function class_ship(name, opts) {
     for(var i = 0; i < data.ships[name].parts.length; i++) {
         this.parts.push(new class_part(
             data.ships[name].parts[i].name,
-            { 'x': data.ships[name].parts[i].position.x, 'y': data.ships[name].parts[i].position.y }
+            { 'x': data.ships[name].parts[i].position.x, 'y': data.ships[name].parts[i].position.y },
+            data.ships[name].parts[i].parent
         ));
     }
 }
@@ -45,11 +47,17 @@ class_ship.prototype.draw = function(context, speed, frags) {
     context.rotate(this.rotation);
     this.totalthrust = 0;
     this.totalweight = 0;
-    for(var i = 0; i < this.parts.length; i++) if(this.parts[i].health > 0) {
-        this.totalthrust += this.parts[i].getthrust();
-        this.totalweight += this.parts[i].getweight();
-        if(this.parts[i].load(speed) && this.fireprimary) this.parts[i].fireweapon(this, frags);
-        this.parts[i].draw(context, { 'thrust': this.thrust });
+    this.health = 0;
+    for(var i = 0; i < this.parts.length; i++) if(!this.parts[i].destroyed) {
+        if(this.parts[i].health > 0 && !this.parts[this.parts[i].parent].destroyed) {
+            this.totalthrust += this.parts[i].getthrust();
+            this.totalweight += this.parts[i].getweight();
+            this.health += this.parts[i].health;
+            if(this.parts[i].load(speed) && this.fireprimary) this.parts[i].fireweapon(this, frags);
+            this.parts[i].draw(context, { 'thrust': this.thrust });
+        } else {
+            this.parts[i].destroyed = 1;
+        }
     }
     context.restore();
 }

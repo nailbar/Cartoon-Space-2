@@ -57,7 +57,8 @@ class_data.prototype.addship = function(name, parts) {
     for(var i = 0; i < parts.length; i++) {
         this.ships[name].parts.push({
             'name': parts[i].name,
-            'position': { 'x': parts[i].position.x, 'y': parts[i].position.y }
+            'position': { 'x': parts[i].position.x, 'y': parts[i].position.y },
+            'parent': parts[i].parent
         });
     }
     return true;

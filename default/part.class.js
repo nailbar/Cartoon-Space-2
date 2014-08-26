@@ -1,11 +1,13 @@
 
 // The part class
-function class_part(name, position) {
+function class_part(name, position, parent) {
     this.name = name;
     this.position = { 'x': position.x, 'y': position.y };
     this.loaded = 0;
     this.locked = 0;
     this.health = data.parts[name].health;
+    this.destroyed = 0;
+    this.parent = parent;
 }
 
 class_part.prototype.draw = function(context, opts) {

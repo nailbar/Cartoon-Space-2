@@ -29,18 +29,18 @@ function init_content() {
     
     // Register ship models
     data.addship("default_ship1", [
-        { 'name': "default_thruster", 'position': { 'x': -35, 'y': 0 } },
-        { 'name': "default_hull", 'position': { 'x': 0, 'y': 0 } },
-        { 'name': "default_blaster", 'position': { 'x': 40, 'y': 0 } },
-        { 'name': "default_cockpit", 'position': { 'x': -7, 'y': 0 } }
+        { 'name': "default_thruster", 'position': { 'x': -35, 'y': 0 }, 'parent': 1 },
+        { 'name': "default_hull", 'position': { 'x': 0, 'y': 0 }, 'parent': 1 },
+        { 'name': "default_blaster", 'position': { 'x': 40, 'y': 0 }, 'parent': 1 },
+        { 'name': "default_cockpit", 'position': { 'x': -7, 'y': 0 }, 'parent': 1 }
     ]);
     data.addship("default_ship2", [
-        { 'name': "default_thruster", 'position': { 'x': -25, 'y': -10 } },
-        { 'name': "default_thruster", 'position': { 'x': -25, 'y': 10 } },
-        { 'name': "default_blaster", 'position': { 'x': -10, 'y': -30 } },
-        { 'name': "default_blaster", 'position': { 'x': -10, 'y': 30 } },
-        { 'name': "default_hull", 'position': { 'x': 0, 'y': 0 } },
-        { 'name': "default_cockpit", 'position': { 'x': -7, 'y': 0 } }
+        { 'name': "default_thruster", 'position': { 'x': -25, 'y': -10 }, 'parent': 4 },
+        { 'name': "default_thruster", 'position': { 'x': -25, 'y': 10 }, 'parent': 4 },
+        { 'name': "default_blaster", 'position': { 'x': -10, 'y': -30 }, 'parent': 4 },
+        { 'name': "default_blaster", 'position': { 'x': -10, 'y': 30 }, 'parent': 4 },
+        { 'name': "default_hull", 'position': { 'x': 0, 'y': 0 }, 'parent': 4 },
+        { 'name': "default_cockpit", 'position': { 'x': -7, 'y': 0 }, 'parent': 4 }
     ]);
 }
 
