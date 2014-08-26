@@ -41,7 +41,8 @@ class_game.prototype.loop = function(context, speed) {
         this.ships[i].draw(context, speed, this.frags);
         
         // Control ship you're looking at
-        if(this.camera.ship_id == i) this.ships[i].control(this.controls);
+        if(this.camera.ship_id == i && this.controls.timer < 500.0) this.ships[i].control(this.controls);
+        else this.ships[i].control(false, i, this.ships, speed);
         
         // Move ship
         this.ships[i].move(speed);

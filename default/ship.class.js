@@ -13,6 +13,7 @@ function class_ship(name, opts) {
     this.totalweight = 0;
     this.health = 1;
     this.parts = [];
+    this.ai = new class_ai();
     
     // Set ship position
     if(opts.position) this.position = { 'x': opts.position.x, 'y': opts.position.y };
@@ -31,13 +32,13 @@ function class_ship(name, opts) {
 }
 
 // Human controlled ship
-class_ship.prototype.control = function(controls) {
-    if(controls.thrust > 0.01) this.thrust = controls.thrust;
-    else this.thrust = 0.0;
-    
-    this.rotspeed = controls.turn * 0.07;
-    
-    this.fireprimary = controls.fire;
+class_ship.prototype.control = function(controls, ship_id, ships, speed) {
+    if(controls) {
+        if(controls.thrust > 0.01) this.thrust = controls.thrust;
+        else this.thrust = 0.0;
+        this.rotspeed = controls.turn * 0.07;
+        this.fireprimary = controls.fire;
+    } else this.ai.think(this, ship_id, ships, speed);
 }
 
 // Draw the ship (and calculate ship stats)

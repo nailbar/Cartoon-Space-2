@@ -36,11 +36,34 @@ function init_content() {
         { 'name': "default_cockpit", 'position': { 'x': -7, 'y': 0 }, 'parent': 1 }
     ]);
     data.addship("default_ship2", [
+        { 'name': "default_thruster", 'position': { 'x': -35, 'y': 0 }, 'parent': 3 },
+        { 'name': "default_blaster", 'position': { 'x': -10, 'y': -30 }, 'parent': 3 },
+        { 'name': "default_blaster", 'position': { 'x': -10, 'y': 30 }, 'parent': 3 },
+        { 'name': "default_hull", 'position': { 'x': 0, 'y': 0 }, 'parent': 3 },
+        { 'name': "default_cockpit", 'position': { 'x': -7, 'y': 0 }, 'parent': 3 }
+    ]);
+    data.addship("default_ship3", [
+        { 'name': "default_thruster", 'position': { 'x': -25, 'y': -10 }, 'parent': 2 },
+        { 'name': "default_thruster", 'position': { 'x': -25, 'y': 10 }, 'parent': 2 },
+        { 'name': "default_hull", 'position': { 'x': 0, 'y': 0 }, 'parent': 2 },
+        { 'name': "default_blaster", 'position': { 'x': 40, 'y': 0 }, 'parent': 2 },
+        { 'name': "default_cockpit", 'position': { 'x': -7, 'y': 0 }, 'parent': 2 }
+    ]);
+    data.addship("default_ship4", [
         { 'name': "default_thruster", 'position': { 'x': -25, 'y': -10 }, 'parent': 4 },
         { 'name': "default_thruster", 'position': { 'x': -25, 'y': 10 }, 'parent': 4 },
         { 'name': "default_blaster", 'position': { 'x': -10, 'y': -30 }, 'parent': 4 },
         { 'name': "default_blaster", 'position': { 'x': -10, 'y': 30 }, 'parent': 4 },
         { 'name': "default_hull", 'position': { 'x': 0, 'y': 0 }, 'parent': 4 },
+        { 'name': "default_cockpit", 'position': { 'x': -7, 'y': 0 }, 'parent': 4 }
+    ]);
+    data.addship("default_ship5", [
+        { 'name': "default_thruster", 'position': { 'x': -25, 'y': -10 }, 'parent': 4 },
+        { 'name': "default_thruster", 'position': { 'x': -25, 'y': 10 }, 'parent': 4 },
+        { 'name': "default_blaster", 'position': { 'x': -10, 'y': -30 }, 'parent': 4 },
+        { 'name': "default_blaster", 'position': { 'x': -10, 'y': 30 }, 'parent': 4 },
+        { 'name': "default_hull", 'position': { 'x': 0, 'y': 0 }, 'parent': 4 },
+        { 'name': "default_blaster", 'position': { 'x': 40, 'y': 0 }, 'parent': 4 },
         { 'name': "default_cockpit", 'position': { 'x': -7, 'y': 0 }, 'parent': 4 }
     ]);
 }

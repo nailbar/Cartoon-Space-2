@@ -7,7 +7,7 @@ function class_controls() {
     this.turnleft = 0;
     this.turnright = 0;
     this.fire = 0;
-    this.timer = 0;
+    this.timer = 1000;
     this.nextship = 0;
 }
 

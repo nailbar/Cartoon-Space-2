@@ -5,7 +5,7 @@ function class_camera() {
     this.ship_id = 0;
     this.x = 0;
     this.y = 0;
-    this.zoom = 0.8;
+    this.zoom = 1.0;
 }
 
 class_camera.prototype.set = function(context, ships) {
@@ -22,6 +22,7 @@ class_camera.prototype.set = function(context, ships) {
         if(this.ship_id < ships.length) {
             this.x = ships[this.ship_id].position.x;
             this.y = ships[this.ship_id].position.y;
+            this.zoom = 1.0 / (1.0 + (ships[this.ship_id].velocity.x * ships[this.ship_id].velocity.x + ships[this.ship_id].velocity.y * ships[this.ship_id].velocity.y) * 0.008);
         } else this.mode = 0;
         break;
     }
