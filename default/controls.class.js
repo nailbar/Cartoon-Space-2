@@ -2,6 +2,7 @@
 // Default ship control class
 function class_controls() {
     this.thrust = 0;
+    this.thrustkey = 0;
     this.turn = 0;
     this.turnleft = 0;
     this.turnright = 0;
@@ -11,6 +12,10 @@ function class_controls() {
 
 class_controls.prototype.tick = function(speed) {
     if(this.timer < 10000) this.timer++;
+    
+    // Gradual thrust
+    if(this.thrustkey) this.thrust += (1.0 - this.thrust) * 0.1 * speed;
+    else this.thrust *= 1.0 - 0.15 * speed;
     
     // Gradual turn rate
     if(this.turnright) this.turn += (1.0 - this.turn) * 0.1 * speed;
@@ -22,7 +27,7 @@ class_controls.prototype.keydown = function(e) {
     switch(e.keyCode) {
     case 73: // I
         this.timer = 0;
-        this.thrust = 1;
+        this.thrustkey = 1;
         break;
     case 74: // J
         this.timer = 0;
@@ -47,7 +52,7 @@ class_controls.prototype.keyup = function(e) {
     switch(e.keyCode) {
     case 73: // I
         this.timer = 0;
-        this.thrust = 0;
+        this.thrustkey = 0;
         break;
     case 74: // J
         this.timer = 0;

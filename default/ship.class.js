@@ -7,6 +7,8 @@ function class_ship(name, opts) {
     this.rotspeed = 0;
     this.normal = { 'x': Math.cos(this.rotation), 'y': Math.sin(this.rotation) };
     this.thrust = 0;
+    this.fireprimary = 0;
+    this.firesecondary = 0;
     this.totalthrust = 0;
     this.totalweight = 0;
     this.parts = [];
@@ -28,14 +30,16 @@ function class_ship(name, opts) {
 
 // Human controlled ship
 class_ship.prototype.control = function(controls) {
-    if(controls.thrust) this.thrust = 1.0;
+    if(controls.thrust > 0.01) this.thrust = controls.thrust;
     else this.thrust = 0.0;
     
-    this.rotspeed = controls.turn * 0.1;
+    this.rotspeed = controls.turn * 0.07;
+    
+    this.fireprimary = controls.fire;
 }
 
 // Draw the ship (and calculate ship stats)
-class_ship.prototype.draw = function(context, speed) {
+class_ship.prototype.draw = function(context, speed, frags) {
     context.save();
     context.translate(this.position.x, this.position.y);
     context.rotate(this.rotation);
@@ -44,7 +48,7 @@ class_ship.prototype.draw = function(context, speed) {
     for(var i = 0; i < this.parts.length; i++) {
         this.totalthrust += this.parts[i].getthrust();
         this.totalweight += this.parts[i].getweight();
-        this.parts[i].calculate(speed);
+        if(this.parts[i].load(speed) && this.fireprimary) this.parts[i].fireweapon(this, frags);
         this.parts[i].draw(context, { 'thrust': this.thrust });
     }
     context.restore();

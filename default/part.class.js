@@ -22,6 +22,29 @@ class_part.prototype.getweight = function() {
     return data.parts[this.name].weight;
 }
 
-class_part.prototype.calculate = function(speed) {
+// Load weapon and return true if loaded
+class_part.prototype.load = function(speed) {
     if(this.loaded > 0) this.loaded -= speed;
+    else if(data.parts[this.name].projectile_name) return true;
+    return false;
 }
+
+// Fire a weapon (creates a projectile and resets load time)
+class_part.prototype.fireweapon = function(ship, frags) {
+    this.loaded = data.parts[this.name].load_time;
+    var tmp = {};
+    tmp.right = { 'x': -ship.normal.y, 'y': ship.normal.x };
+    tmp.size = data.getpartsize(this.name);
+    tmp.position = {
+        'x': ship.position.x + ship.normal.x * (this.position.x + tmp.size.x) + tmp.right.x * this.position.y,
+        'y': ship.position.y + ship.normal.y * (this.position.x + tmp.size.x) + tmp.right.y * this.position.y
+    };
+    frags.push(new class_frag(data.parts[this.name].projectile_name, tmp.position, {
+        'rotation': ship.rotation,
+        'velocity': { 'x': ship.velocity.x, 'y': ship.velocity.y }
+    }));
+}
+
+
+
+

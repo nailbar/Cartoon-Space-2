@@ -3,14 +3,19 @@
 function init_content() {
     
     // Register frags
-    data.addfrag("default_blast", "default_blast", "default/blast.png");
+    data.addfrag("default_blast", "default_blast", "default/blast.png", {
+        'type': "projectile",
+        'time': 100.0,
+        'speed': 20.0,
+        'idle': 10.0
+    });
     
     // Register parts
     data.addpart("default_hull", "default_hull", "default/hull.png", { 'weight': 4.0 });
     data.addpart("default_cockpit", "default_cockpit", "default/cockpit.png", { 'weight': 1.5 });
     data.addpart("default_thruster", "default_thruster", "default/thruster.png", {
         'weight': 2.0,
-        'thrust': 7.0,
+        'thrust': 5.0,
         'thrust_image_name': "default_thrustflame",
         'thrust_image_path': "default/thrustflame.png"
     });

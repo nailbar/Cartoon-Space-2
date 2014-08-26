@@ -4,6 +4,7 @@ function class_game(context) {
     
     // Game variables
     this.ships = [];
+    this.frags = [];
     this.camera = new class_camera();
     this.controls = new class_controls();
     
@@ -24,15 +25,15 @@ class_game.prototype.loop = function(context, speed) {
     
     // Clear level
     context.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Loop through ships
     context.save();
     this.camera.set(context, this.ships);
     this.controls.tick(speed);
+    
+    // Loop through ships
     for(var i = 0; i < this.ships.length; i++) {
         
         // Draw ship (and do part calculations)
-        this.ships[i].draw(context, speed);
+        this.ships[i].draw(context, speed, this.frags);
         
         // Control ship
         if(this.camera.ship_id == i) this.ships[i].control(this.controls);
@@ -40,6 +41,18 @@ class_game.prototype.loop = function(context, speed) {
         // Move ship
         this.ships[i].move(speed);
     }
+    
+    // Loop through frags
+    for(var i = 0; i < this.frags.length; i++) {
+        
+        // Draw frag (and do part calculations)
+        this.frags[i].draw(context);
+        
+        // Move frag
+        this.frags[i].move(speed);
+    }
+    
+    // Done
     context.restore();
 }
 

@@ -9,8 +9,20 @@ function class_data() {
     this.frags = {};
 }
 
+// Draw a frag
+class_data.prototype.drawfrag = function(context, name, opts) {
+    if(!opts) opts = {};
+    if(!this.frags[name]) {
+        console.log("class_data.drawfrag: " + name + " not registered");
+        return false;
+    }
+    this.drawgraphic(context, this.frags[name].graphic);
+    return true;
+}
+
 // Add a frag to list
 class_data.prototype.addfrag = function(name, gname, gpath, opts) {
+    if(!opts) opts = {};
     if(this.frags[name]) {
         console.log("class_data.addfrag: " + name + " already registered");
         return false;
@@ -20,8 +32,13 @@ class_data.prototype.addfrag = function(name, gname, gpath, opts) {
         'graphic': gname,
         'type': "particle", // particle, projectile, missile
         'time': 100.0,
+        'speed': 0.0,
         'idle': 0.0
     };
+    if(opts.type) this.frags[name].type = opts.type;
+    if(opts.time) this.frags[name].time = opts.time;
+    if(opts.speed) this.frags[name].speed = opts.speed;
+    if(opts.idle) this.frags[name].idle = opts.idle;
     return true;
 }
 
@@ -100,12 +117,22 @@ class_data.prototype.drawpart = function(context, name, opts) {
     if(opts.thrust && this.parts[name].thrust_image_name) {
         context.save();
         context.translate(this.graphics[this.parts[name].graphic].width * -0.5, 0);
-        context.scale(opts.thrust * (0.9 + Math.random() * 0.1) * this.parts[name].thrust_image_scale, this.parts[name].thrust_image_scale);
+        context.scale(opts.thrust * (0.9 + Math.random() * 0.1) * this.parts[name].thrust_image_scale, this.parts[name].thrust_image_scale * (0.5 + opts.thrust * 0.5));
         context.translate(this.graphics[this.parts[name].thrust_image_name].width * -0.5, 0);
         this.drawgraphic(context, this.parts[name].thrust_image_name);
         context.restore();
     }
     return true;
+}
+
+// Get part size
+class_data.prototype.getpartsize = function(name) {
+    if(!this.parts[name]) {
+        console.log("class_data.getpartsize: " + name + " not registered");
+        return false;
+    }
+    var graphic = this.graphics[this.parts[name].graphic];
+    return { 'x': graphic.width, 'y': graphic.height };
 }
 
 // Add an image to list
