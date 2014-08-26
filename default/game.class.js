@@ -28,6 +28,11 @@ class_game.prototype.loop = function(context, speed) {
     context.save();
     this.camera.set(context, this.ships);
     this.controls.tick(speed);
+    if(this.controls.nextship) {
+        this.controls.nextship = 0;
+        this.camera.ship_id++;
+        if(this.camera.ship_id > this.ships.length) this.camera.ship_id = 0;
+    }
     
     // Loop through ships
     for(var i = 0; i < this.ships.length; i++) {

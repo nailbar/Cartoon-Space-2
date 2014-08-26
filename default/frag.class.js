@@ -84,9 +84,9 @@ class_frag.prototype.hit = function(ships, frags) {
                 tmp.dot_right = -this.normal.y * tmp.relative.x + this.normal.x * tmp.relative.y;
                 tmp.spin = (Math.abs(tmp.dot_right) > 1.0 ? 1.0 - 1.0 / Math.abs(tmp.dot_right) : 0.0) * 0.5;
                 tmp.kick = 1.0 - tmp.spin;
-                ships[i].velocity.x += this.velocity.x * tmp.damage * 0.1 * tmp.kick;
-                ships[i].velocity.y += this.velocity.y * tmp.damage * 0.1 * tmp.kick;
-                ships[i].rotspeed += tmp.damage * 0.01 * (tmp.dot_right > 0 ? tmp.spin : -tmp.spin);
+                ships[i].velocity.x += this.velocity.x * tmp.damage * (1.0 / ships[i].totalweight) * tmp.kick;
+                ships[i].velocity.y += this.velocity.y * tmp.damage * (1.0 / ships[i].totalweight) * tmp.kick;
+                ships[i].rotspeed += tmp.damage * (0.1 / ships[i].totalweight) * (tmp.dot_right > 0 ? tmp.spin : -tmp.spin);
                 return;
             }
         }

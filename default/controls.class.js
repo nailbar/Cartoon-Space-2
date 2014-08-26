@@ -8,6 +8,7 @@ function class_controls() {
     this.turnright = 0;
     this.fire = 0;
     this.timer = 0;
+    this.nextship = 0;
 }
 
 class_controls.prototype.tick = function(speed) {
@@ -65,6 +66,9 @@ class_controls.prototype.keyup = function(e) {
     case 81: // Q
         this.timer = 0;
         this.fire = 0;
+        break;
+     case 78: // N
+        this.nextship = 1;
         break;
     }
 }
