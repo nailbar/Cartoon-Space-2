@@ -28,15 +28,14 @@ class_game.prototype.loop = function(context, speed) {
     // Loop through ships
     context.save();
     this.camera.set(context, this.ships);
-    this.controls.tick();
+    this.controls.tick(speed);
     for(var i = 0; i < this.ships.length; i++) {
         
-        // Draw ship
-        this.ships[i].draw(context);
+        // Draw ship (and do part calculations)
+        this.ships[i].draw(context, speed);
         
         // Control ship
         if(this.camera.ship_id == i) this.ships[i].control(this.controls);
-        else this.ships[i].rotspeed = 0.1;
         
         // Move ship
         this.ships[i].move(speed);

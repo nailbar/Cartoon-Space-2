@@ -32,12 +32,10 @@ class_ship.prototype.control = function(controls) {
     else this.thrust = 0.0;
     
     this.rotspeed = controls.turn * 0.1;
-    
-//     controls.fire = 0;
 }
 
 // Draw the ship (and calculate ship stats)
-class_ship.prototype.draw = function(context) {
+class_ship.prototype.draw = function(context, speed) {
     context.save();
     context.translate(this.position.x, this.position.y);
     context.rotate(this.rotation);
@@ -46,6 +44,7 @@ class_ship.prototype.draw = function(context) {
     for(var i = 0; i < this.parts.length; i++) {
         this.totalthrust += this.parts[i].getthrust();
         this.totalweight += this.parts[i].getweight();
+        this.parts[i].calculate(speed);
         this.parts[i].draw(context, { 'thrust': this.thrust });
     }
     context.restore();
@@ -65,7 +64,7 @@ class_ship.prototype.move = function(speed) {
     this.velocity.y += this.normal.y * (this.totalthrust / this.totalweight) * this.thrust * speed;
     
     // Artificial friction
-    this.velocity.x *= 1.0 - 0.1 * speed;
-    this.velocity.y *= 1.0 - 0.1 * speed;
-    this.rotspeed *= 1.0 - 0.1 * speed;
+    this.velocity.x *= 1.0 - 0.05 * speed;
+    this.velocity.y *= 1.0 - 0.05 * speed;
+    this.rotspeed *= 1.0 - 0.01 * speed;
 }

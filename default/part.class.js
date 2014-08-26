@@ -3,6 +3,8 @@
 function class_part(name, position) {
     this.name = name;
     this.position = { 'x': position.x, 'y': position.y };
+    this.loaded = 0;
+    this.locked = 0;
 }
 
 class_part.prototype.draw = function(context, opts) {
@@ -18,4 +20,8 @@ class_part.prototype.getthrust = function() {
 
 class_part.prototype.getweight = function() {
     return data.parts[this.name].weight;
+}
+
+class_part.prototype.calculate = function(speed) {
+    if(this.loaded > 0) this.loaded -= speed;
 }

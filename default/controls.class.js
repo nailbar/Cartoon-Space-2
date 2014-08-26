@@ -9,10 +9,13 @@ function class_controls() {
     this.timer = 0;
 }
 
-class_controls.prototype.tick = function() {
+class_controls.prototype.tick = function(speed) {
     if(this.timer < 10000) this.timer++;
-    if(this.turn < this.turnright - this.turnleft) this.turn += 0.1;
-    else if(this.turn > this.turnright - this.turnleft) this.turn -= 0.1;
+    
+    // Gradual turn rate
+    if(this.turnright) this.turn += (1.0 - this.turn) * 0.1 * speed;
+    else if(this.turnleft) this.turn += (-1.0 - this.turn) * 0.1 * speed;
+    else this.turn *= 1.0 - 0.15 * speed;
 }
 
 class_controls.prototype.keydown = function(e) {
