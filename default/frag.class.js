@@ -58,7 +58,8 @@ class_frag.prototype.hit = function(ships, frags) {
             tmp.closest_distance = 1000.0;
             tmp.closest_id = 0;
             tmp.right = { 'x': -ships[i].normal.y, 'y': ships[i].normal.x };
-            for(var u = 0; u < ships[i].parts.length; u++) {
+            tmp.closest_relative = { 'x': 1.0, 'y': 0.0 };
+            for(var u = 0; u < ships[i].parts.length; u++) if(ships[i].parts[u].health > 0) {
                 tmp.part_position = {
                     'x': ships[i].position.x + ships[i].normal.x * ships[i].parts[u].position.x + tmp.right.x * ships[i].parts[u].position.y,
                     'y': ships[i].position.y + ships[i].normal.y * ships[i].parts[u].position.x + tmp.right.y * ships[i].parts[u].position.y
@@ -69,12 +70,23 @@ class_frag.prototype.hit = function(ships, frags) {
                 if(tmp.part_distance < tmp.closest_distance) {
                     tmp.closest_distance = tmp.part_distance;
                     tmp.closest_id = u;
+                    tmp.closest_relative = { 'x': tmp.part_relative.x, 'y': tmp.part_relative.y };
                 }
             }
             
             // Check if closest part is closer than part size
             if(tmp.closest_distance < 0) {
-                this.time = 0;
+                tmp.damage = Math.random() * data.frags[this.name].damage;
+                ships[i].parts[tmp.closest_id].health -= tmp.damage;
+                if(ships[i].parts[tmp.closest_id].health > 0) this.time = 0;
+                
+                // Give the ship a good kick and spin from being hit
+                tmp.dot_right = -this.normal.y * tmp.relative.x + this.normal.x * tmp.relative.y;
+                tmp.spin = (Math.abs(tmp.dot_right) > 1.0 ? 1.0 - 1.0 / Math.abs(tmp.dot_right) : 0.0) * 0.5;
+                tmp.kick = 1.0 - tmp.spin;
+                ships[i].velocity.x += this.velocity.x * tmp.damage * 0.1 * tmp.kick;
+                ships[i].velocity.y += this.velocity.y * tmp.damage * 0.1 * tmp.kick;
+                ships[i].rotspeed += tmp.damage * 0.01 * (tmp.dot_right > 0 ? tmp.spin : -tmp.spin);
                 return;
             }
         }

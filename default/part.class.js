@@ -5,6 +5,7 @@ function class_part(name, position) {
     this.position = { 'x': position.x, 'y': position.y };
     this.loaded = 0;
     this.locked = 0;
+    this.health = data.parts[name].health;
 }
 
 class_part.prototype.draw = function(context, opts) {
@@ -31,6 +32,7 @@ class_part.prototype.load = function(speed) {
 
 // Fire a weapon (creates a projectile and resets load time)
 class_part.prototype.fireweapon = function(ship, frags) {
+    if(this.health <= 0) return false;
     this.loaded = data.parts[this.name].load_time;
     var tmp = {};
     tmp.right = { 'x': -ship.normal.y, 'y': ship.normal.x };
@@ -43,6 +45,7 @@ class_part.prototype.fireweapon = function(ship, frags) {
         'rotation': ship.rotation,
         'velocity': { 'x': ship.velocity.x, 'y': ship.velocity.y }
     }));
+    return true;
 }
 
 

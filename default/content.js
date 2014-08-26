@@ -7,7 +7,8 @@ function init_content() {
         'type': "projectile",
         'time': 100.0,
         'speed': 20.0,
-        'idle': 10.0
+        'idle': 5.0,
+        'damage': 1.5
     });
     
     // Register parts

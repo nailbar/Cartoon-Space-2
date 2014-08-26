@@ -45,7 +45,7 @@ class_ship.prototype.draw = function(context, speed, frags) {
     context.rotate(this.rotation);
     this.totalthrust = 0;
     this.totalweight = 0;
-    for(var i = 0; i < this.parts.length; i++) {
+    for(var i = 0; i < this.parts.length; i++) if(this.parts[i].health > 0) {
         this.totalthrust += this.parts[i].getthrust();
         this.totalweight += this.parts[i].getweight();
         if(this.parts[i].load(speed) && this.fireprimary) this.parts[i].fireweapon(this, frags);

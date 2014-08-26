@@ -33,12 +33,14 @@ class_data.prototype.addfrag = function(name, gname, gpath, opts) {
         'type': "particle", // particle, projectile, missile
         'time': 100.0,
         'speed': 0.0,
-        'idle': 0.0
+        'idle': 0.0,
+        'damage': 0.0
     };
     if(opts.type) this.frags[name].type = opts.type;
     if(opts.time) this.frags[name].time = opts.time;
     if(opts.speed) this.frags[name].speed = opts.speed;
     if(opts.idle) this.frags[name].idle = opts.idle;
+    if(opts.damage) this.frags[name].damage = opts.damage;
     return true;
 }
 
@@ -72,6 +74,7 @@ class_data.prototype.addpart = function(name, gname, gpath, opts) {
     this.parts[name] = {
         'graphic': gname, // The picture of said part
         'weight': 1.0, // Part weight
+        'health': 1.0, // Part health
         'thrust': 0, // If part is thruster, how much thrust it provides
         'thrust_image_name': "", // Image for thrust exhaust if part is thruster
         'thrust_image_scale': 1.0, // Image size for thrust exhaust if part is thruster and has an image
@@ -84,6 +87,8 @@ class_data.prototype.addpart = function(name, gname, gpath, opts) {
     };
     
    if(opts.weight) this.parts[name].weight = opts.weight;
+   if(opts.health) this.parts[name].health = opts.health;
+   else this.parts[name].health = opts.weight;
     
     // Thruster settings
     if(opts.thrust) {
