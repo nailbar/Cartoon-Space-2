@@ -50,6 +50,15 @@ class_game.prototype.loop = function(context, speed) {
         
         // Move frag
         this.frags[i].move(speed);
+        
+        // Check if it hit something
+        this.frags[i].hit(this.ships, this.frags);
+        
+        // Mark frags for removal
+        if(this.frags[i].time <= 0) {
+            this.frags.splice(i, 1);
+            i--;
+        }
     }
     
     // Done
