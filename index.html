@@ -23,7 +23,7 @@ function init() {
     setInterval(loop, 25);
 }
 function loop() {
-    game.loop(c, 1.0);
+    game.loop(c, 0.3);
 }
 function keydown(e) {
     if(game) game.controls.keydown(e);
@@ -34,6 +34,6 @@ function keyup(e) {
 </script>
 </head>
 <body onload='init()' style='margin: 0px;' onkeydown='keydown(event)' onkeyup='keyup(event)'>
-<canvas id="canvas" width='1200' height='800'></canvas>
+<canvas id="canvas" width='1200' height='800' style='background-color: #bbc;'></canvas>
 </body>
 </html>

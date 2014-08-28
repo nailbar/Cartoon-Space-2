@@ -47,7 +47,8 @@ class_data.prototype.addfrag = function(name, gname, gpath, opts) {
         'idle': 0.0,
         'damage': 0.0,
         'thrust_image_name': "", // Image for thrust exhaust if part is missile
-        'thrust_image_scale': 1.0 // Image size for thrust exhaust if part is missile and has an image
+        'thrust_image_scale': 1.0, // Image size for thrust exhaust if part is missile and has an image
+        'frags': "" // Resulting projectiles when missile explodes
     };
     if(opts.type) this.frags[name].type = opts.type;
     if(opts.time) this.frags[name].time = opts.time;
@@ -59,6 +60,7 @@ class_data.prototype.addfrag = function(name, gname, gpath, opts) {
         this.frags[name].thrust_image_name = opts.thrust_image_name;
         if(opts.thrust_image_scale) this.frags[name].thrust_image_scale = opts.thrust_image_scale;
     }
+    if(opts.frags) this.frags[name].frags = opts.frags;
     return true;
 }
 

@@ -21,6 +21,7 @@ function class_frag(name, position, opts) {
         if(opts.graphic) this.graphic = opts.graphic;
         if(opts.target) this.target = opts.target;
     }
+    
     this.normal = { 'x': Math.cos(this.rotation), 'y': Math.sin(this.rotation) };
     if(data.frags[name].speed) {
         switch(data.frags[name].type) {
@@ -87,8 +88,8 @@ class_frag.prototype.move = function(speed, ships) {
         }
         
         // Artificial friction to prevent drifting
-        this.velocity.x *= 1.0 - 0.05 * speed;
-        this.velocity.y *= 1.0 - 0.05 * speed;
+        this.velocity.x *= 1.0 - 0.08 * speed;
+        this.velocity.y *= 1.0 - 0.08 * speed;
         this.rotspeed *= 1.0 - 0.01 * speed;
     }
 }
@@ -103,40 +104,63 @@ class_frag.prototype.hit = function(ships, frags) {
         tmp.relative = { 'x': ships[i].position.x - this.position.x, 'y': ships[i].position.y - this.position.y };
         if(Math.abs(tmp.relative.x) < 50.0 && Math.abs(tmp.relative.y) < 50.0) { // TODO: Use calculated ship size
             
-            // Find the ships closest part
-            tmp.closest_distance = 1000.0;
-            tmp.closest_id = 0;
-            tmp.right = { 'x': -ships[i].normal.y, 'y': ships[i].normal.x };
-            tmp.closest_relative = { 'x': 1.0, 'y': 0.0 };
-            for(var u = 0; u < ships[i].parts.length; u++) if(ships[i].parts[u].health > 0) {
-                tmp.part_position = {
-                    'x': ships[i].position.x + ships[i].normal.x * ships[i].parts[u].position.x + tmp.right.x * ships[i].parts[u].position.y,
-                    'y': ships[i].position.y + ships[i].normal.y * ships[i].parts[u].position.x + tmp.right.y * ships[i].parts[u].position.y
-                };
-                tmp.part_size = data.getpartsize(ships[i].parts[u].name);
-                tmp.part_relative = { 'x': tmp.part_position.x - this.position.x, 'y': tmp.part_position.y - this.position.y };
-                tmp.part_distance = Math.sqrt(tmp.part_relative.x * tmp.part_relative.x + tmp.part_relative.y * tmp.part_relative.y) - (tmp.part_size.x + tmp.part_size.y) * 0.25;
-                if(tmp.part_distance < tmp.closest_distance) {
-                    tmp.closest_distance = tmp.part_distance;
-                    tmp.closest_id = u;
-                    tmp.closest_relative = { 'x': tmp.part_relative.x, 'y': tmp.part_relative.y };
+            // Missiles explode at this point
+            if(data.frags[this.name].type == "missile") {
+                this.time = 0;
+                for(var u = 0; u < 10; u++) {
+                    tmp.rotation = Math.random() * Math.PI * 2.0;
+                    tmp.speed = Math.random() * 15.0;
+                    tmp.velocity = {
+                        'x': Math.cos(tmp.rotation) * tmp.speed,
+                        'y': Math.sin(tmp.rotation) * tmp.speed
+                    };
+                    frags.push(new class_frag(data.frags[this.name].frags, this.position, {
+                        'velocity': {
+                            'x': Math.cos(tmp.rotation) * tmp.speed,
+                            'y': Math.sin(tmp.rotation) * tmp.speed
+                        },
+                        'rotation': tmp.rotation,
+                        'rotspeed': Math.random() - 0.5
+                    }));
                 }
-            }
-            
-            // Check if closest part is closer than part size
-            if(tmp.closest_distance < 0) {
-                tmp.damage = Math.random() * data.frags[this.name].damage;
-                ships[i].parts[tmp.closest_id].health -= tmp.damage;
-                if(ships[i].parts[tmp.closest_id].health > 0) this.time = 0;
-                
-                // Give the ship a good kick and spin from being hit
-                tmp.dot_right = -this.normal.y * tmp.relative.x + this.normal.x * tmp.relative.y;
-                tmp.spin = (Math.abs(tmp.dot_right) > 1.0 ? 1.0 - 1.0 / Math.abs(tmp.dot_right) : 0.0) * 0.5;
-                tmp.kick = 1.0 - tmp.spin;
-                ships[i].velocity.x += this.velocity.x * tmp.damage * (1.0 / ships[i].totalweight) * tmp.kick;
-                ships[i].velocity.y += this.velocity.y * tmp.damage * (1.0 / ships[i].totalweight) * tmp.kick;
-                ships[i].rotspeed += tmp.damage * (0.1 / ships[i].totalweight) * (tmp.dot_right > 0 ? tmp.spin : -tmp.spin);
                 return;
+            } else {
+                
+                // Find the ships closest part
+                tmp.closest_distance = 1000.0;
+                tmp.closest_id = 0;
+                tmp.right = { 'x': -ships[i].normal.y, 'y': ships[i].normal.x };
+                tmp.closest_relative = { 'x': 1.0, 'y': 0.0 };
+                for(var u = 0; u < ships[i].parts.length; u++) if(ships[i].parts[u].health > 0) {
+                    tmp.part_position = {
+                        'x': ships[i].position.x + ships[i].normal.x * ships[i].parts[u].position.x + tmp.right.x * ships[i].parts[u].position.y,
+                        'y': ships[i].position.y + ships[i].normal.y * ships[i].parts[u].position.x + tmp.right.y * ships[i].parts[u].position.y
+                    };
+                    tmp.part_size = data.getpartsize(ships[i].parts[u].name);
+                    tmp.part_relative = { 'x': tmp.part_position.x - this.position.x, 'y': tmp.part_position.y - this.position.y };
+                    tmp.part_distance = Math.sqrt(tmp.part_relative.x * tmp.part_relative.x + tmp.part_relative.y * tmp.part_relative.y) - (tmp.part_size.x + tmp.part_size.y) * 0.25;
+                    if(tmp.part_distance < tmp.closest_distance) {
+                        tmp.closest_distance = tmp.part_distance;
+                        tmp.closest_id = u;
+                        tmp.closest_relative = { 'x': tmp.part_relative.x, 'y': tmp.part_relative.y };
+                    }
+                }
+                
+                // Check if closest part is closer than part size
+                if(tmp.closest_distance < 0) {
+                    tmp.damage = Math.random() * data.frags[this.name].damage;
+                    ships[i].parts[tmp.closest_id].health -= tmp.damage;
+                    if(ships[i].parts[tmp.closest_id].health > 0) this.time = 0;
+                    
+                    // Give the ship a good kick and spin from being hit
+                    tmp.dot_right = -this.normal.y * tmp.relative.x + this.normal.x * tmp.relative.y;
+                    tmp.spin = (Math.abs(tmp.dot_right) > 1.0 ? 1.0 - 1.0 / Math.abs(tmp.dot_right) : 0.0) * 0.5;
+                    tmp.kick = 1.0 - tmp.spin;
+                    ships[i].velocity.x += this.velocity.x * tmp.damage * (1.0 / ships[i].totalweight) * tmp.kick;
+                    ships[i].velocity.y += this.velocity.y * tmp.damage * (1.0 / ships[i].totalweight) * tmp.kick;
+                    ships[i].rotspeed += tmp.damage * (0.1 / ships[i].totalweight) * (tmp.dot_right > 0 ? tmp.spin : -tmp.spin);
+                    return;
+                }
             }
         }
     }
