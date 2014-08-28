@@ -20,11 +20,10 @@ function init() {
     data = new class_data();
     init_content();
     game = new class_game(c);
-    loop();
+    setInterval(loop, 25);
 }
 function loop() {
     game.loop(c, 1.0);
-    setTimeout(loop, 10);
 }
 function keydown(e) {
     if(game) game.controls.keydown(e);

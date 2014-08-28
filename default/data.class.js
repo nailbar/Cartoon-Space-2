@@ -120,7 +120,8 @@ class_data.prototype.drawpart = function(context, name, opts) {
     this.drawgraphic(context, this.parts[name].graphic);
     
     // Thruster graphics
-    if(opts.thrust && this.parts[name].thrust_image_name) {
+    // Don't try to draw the thrust if it's too small to see (The game crashes when trying to scale the matrix to very-very-tiny)
+    if(opts.thrust > 0.001 && this.parts[name].thrust_image_name) {
         context.save();
         context.translate(this.graphics[this.parts[name].graphic].width * -0.5, 0);
         context.scale(opts.thrust * (0.9 + Math.random() * 0.1) * this.parts[name].thrust_image_scale, this.parts[name].thrust_image_scale * (0.5 + opts.thrust * 0.5));
