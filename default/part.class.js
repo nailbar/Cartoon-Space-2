@@ -33,7 +33,7 @@ class_part.prototype.load = function(speed) {
 }
 
 // Fire a weapon (creates a projectile and resets load time)
-class_part.prototype.fireweapon = function(ship, frags) {
+class_part.prototype.fireweapon = function(ship, frags, target) {
     if(this.health <= 0) return false;
     this.loaded = data.parts[this.name].load_time;
     var tmp = {};
@@ -45,7 +45,8 @@ class_part.prototype.fireweapon = function(ship, frags) {
     };
     frags.push(new class_frag(data.parts[this.name].projectile_name, tmp.position, {
         'rotation': ship.rotation,
-        'velocity': { 'x': ship.velocity.x, 'y': ship.velocity.y }
+        'velocity': { 'x': ship.velocity.x, 'y': ship.velocity.y },
+        'target': target
     }));
     return true;
 }

@@ -11,6 +11,7 @@ function class_frag(name, position, opts) {
     this.graphic = "";
     this.time = 100;
     this.idle = 0;
+    this.target = -1;
     
     // More details
     if(opts) {
@@ -18,6 +19,7 @@ function class_frag(name, position, opts) {
         if(opts.rotation) this.rotation = opts.rotation;
         if(opts.rotspeed) this.rotspeed = opts.rotspeed;
         if(opts.graphic) this.graphic = opts.graphic;
+        if(opts.target) this.target = opts.target;
     }
     this.normal = { 'x': Math.cos(this.rotation), 'y': Math.sin(this.rotation) };
     if(data.frags[name].speed) {
@@ -31,6 +33,8 @@ function class_frag(name, position, opts) {
             this.velocity.x += this.normal.x * data.frags[name].speed;
             this.velocity.y += this.normal.y * data.frags[name].speed;
             break;
+//         case "missile": // Missiles does not have initial speeds
+//             break;
         }
     }
     if(data.frags[name].time) this.time = data.frags[name].time;
@@ -48,7 +52,8 @@ class_frag.prototype.draw = function(context) {
 }
 
 // Move the frag
-class_frag.prototype.move = function(speed) {
+class_frag.prototype.move = function(speed, ships) {
+    var tmp = {};
     if(this.time > 0) this.time -= speed;
     if(this.idle > 0) this.idle -= speed;
     
@@ -56,12 +61,42 @@ class_frag.prototype.move = function(speed) {
     this.position.x += this.velocity.x * speed;
     this.position.y += this.velocity.y * speed;
     this.rotation += this.rotspeed * speed;
+    this.normal = { 'x': Math.cos(this.rotation), 'y': Math.sin(this.rotation) };
+    
+    // Missile has acceleration
+    if(data.frags[this.name].type == "missile") {
+        this.velocity.x += this.normal.x * data.frags[this.name].speed * speed;
+        this.velocity.y += this.normal.y * data.frags[this.name].speed * speed;
+        
+        // Follow target
+        if(this.target >= 0 && this.target < ships.length) {
+            tmp.relative_position = { 'x': ships[this.target].position.x - this.position.x, 'y': ships[this.target].position.y - this.position.y };
+            tmp.distance = Math.sqrt(tmp.relative_position.x * tmp.relative_position.x + tmp.relative_position.y * tmp.relative_position.y);
+            if(tmp.distance) tmp.normal = { 'x': tmp.relative_position.x / tmp.distance, 'y': tmp.relative_position.y / tmp.distance };
+            else tmp.normal = { 'x': 1, 'y': 0 };
+            tmp.dot = this.normal.x * tmp.normal.x + this.normal.y * tmp.normal.y;
+            tmp.dot_right = this.normal.x * -tmp.normal.y + this.normal.y * tmp.normal.x;
+            if(tmp.dot > 0.0) {
+                if(tmp.dot_right > 0.5) this.rotspeed = -0.2;
+                else if(tmp.dot_right < -0.5) this.rotspeed = 0.2;
+                else this.rotspeed = tmp.dot_right * -0.4;
+            } else {
+                if(tmp.dot_right > 0.0) this.rotspeed = -0.2;
+                else this.rotspeed = 0.2;
+            }
+        }
+        
+        // Artificial friction to prevent drifting
+        this.velocity.x *= 1.0 - 0.05 * speed;
+        this.velocity.y *= 1.0 - 0.05 * speed;
+        this.rotspeed *= 1.0 - 0.01 * speed;
+    }
 }
 
 // Hit a ship
 class_frag.prototype.hit = function(ships, frags) {
     var tmp = {};
-    if(this.time > 0 && this.idle <= 0 && data.frags[this.name].type == "projectile") for(var i = 0; i < ships.length; i++) {
+    if(this.time > 0 && this.idle <= 0 && (data.frags[this.name].type == "projectile" || data.frags[this.name].type == "missile")) for(var i = 0; i < ships.length; i++) {
         
         // Check if projectile is even near this ship
         // TODO: Check if projectile passed through a part during the frame

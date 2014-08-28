@@ -62,7 +62,7 @@ class_game.prototype.loop = function(context, speed) {
         this.frags[i].draw(context);
         
         // Move frag
-        this.frags[i].move(speed);
+        this.frags[i].move(speed, this.ships);
         
         // Check if it hit something
         this.frags[i].hit(this.ships, this.frags);

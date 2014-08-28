@@ -17,6 +17,17 @@ class_data.prototype.drawfrag = function(context, name, opts) {
         return false;
     }
     this.drawgraphic(context, this.frags[name].graphic);
+    
+    // Thruster graphics
+    // Don't try to draw the thrust if it's too small to see (The game crashes when trying to scale the matrix to very-very-tiny)
+    if(this.frags[name].thrust_image_name) {
+        context.save();
+        context.translate(this.graphics[this.frags[name].graphic].width * -0.5, 0);
+        context.scale((0.9 + Math.random() * 0.1) * this.frags[name].thrust_image_scale, this.frags[name].thrust_image_scale);
+        context.translate(this.graphics[this.frags[name].thrust_image_name].width * -0.5, 0);
+        this.drawgraphic(context, this.frags[name].thrust_image_name);
+        context.restore();
+    }
     return true;
 }
 
@@ -34,13 +45,20 @@ class_data.prototype.addfrag = function(name, gname, gpath, opts) {
         'time': 100.0,
         'speed': 0.0,
         'idle': 0.0,
-        'damage': 0.0
+        'damage': 0.0,
+        'thrust_image_name': "", // Image for thrust exhaust if part is missile
+        'thrust_image_scale': 1.0 // Image size for thrust exhaust if part is missile and has an image
     };
     if(opts.type) this.frags[name].type = opts.type;
     if(opts.time) this.frags[name].time = opts.time;
     if(opts.speed) this.frags[name].speed = opts.speed;
     if(opts.idle) this.frags[name].idle = opts.idle;
     if(opts.damage) this.frags[name].damage = opts.damage;
+    if(opts.thrust_image_name && opts.thrust_image_path) { // Thrust exhaust graphics
+        this.addgraphic(opts.thrust_image_name, opts.thrust_image_path);
+        this.frags[name].thrust_image_name = opts.thrust_image_name;
+        if(opts.thrust_image_scale) this.frags[name].thrust_image_scale = opts.thrust_image_scale;
+    }
     return true;
 }
 

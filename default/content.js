@@ -7,9 +7,19 @@ function init_content() {
     data.addfrag("default_blast", "default_blast", "default/blast.png", {
         'type': "projectile",
         'time': 100.0,
-        'speed': 20.0,
+        'speed': 30.0,
         'idle': 5.0,
         'damage': 1.5
+    });
+    data.addfrag("default_missile", "default_missile", "default/missile.png", {
+        'type': "missile",
+        'time': 200.0,
+        'speed': 4.0,
+        'idle': 10.0,
+        'damage': 8.0,
+        'thrust_image_name': "default_thrustflame",
+        'thrust_image_path': "default/thrustflame.png",
+        'thrust_image_scale': 0.6
     });
     
     // Register parts
@@ -17,15 +27,20 @@ function init_content() {
     data.addpart("default_cockpit", "default_cockpit", "default/cockpit.png", { 'weight': 1.5 });
     data.addpart("default_thruster", "default_thruster", "default/thruster.png", {
         'weight': 2.0,
-        'thrust': 5.0,
+        'thrust': 7.0,
         'thrust_image_name': "default_thrustflame",
         'thrust_image_path': "default/thrustflame.png"
     });
     data.addpart("default_blaster", "default_blaster", "default/blaster.png", {
         'weight': 0.6,
         'projectile_name': "default_blast",
-        'load_time': 10.0,
-        'lock_time': 0 // This is for missiles
+        'load_time': 10.0
+    });
+    data.addpart("default_launcher", "default_launcher", "default/launcher.png", {
+        'weight': 1.5,
+        'projectile_name': "default_missile",
+        'load_time': 80.0,
+        'lock_time': 70.0
     });
     
     // Register ship models
@@ -63,7 +78,7 @@ function init_content() {
         { 'name': "default_blaster", 'position': { 'x': -10, 'y': -30 }, 'parent': 4 },
         { 'name': "default_blaster", 'position': { 'x': -10, 'y': 30 }, 'parent': 4 },
         { 'name': "default_hull", 'position': { 'x': 0, 'y': 0 }, 'parent': 4 },
-        { 'name': "default_blaster", 'position': { 'x': 40, 'y': 0 }, 'parent': 4 },
+        { 'name': "default_launcher", 'position': { 'x': 40, 'y': 0 }, 'parent': 4 },
         { 'name': "default_cockpit", 'position': { 'x': -7, 'y': 0 }, 'parent': 4 }
     ]);
 }

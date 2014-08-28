@@ -14,6 +14,7 @@ function class_ship(name, opts) {
     this.health = 1;
     this.parts = [];
     this.ai = new class_ai();
+    this.target = 0;
     
     // Set ship position
     if(opts.position) this.position = { 'x': opts.position.x, 'y': opts.position.y };
@@ -38,7 +39,10 @@ class_ship.prototype.control = function(controls, ship_id, ships, speed) {
         else this.thrust = 0.0;
         this.rotspeed = controls.turn * 0.07;
         this.fireprimary = controls.fire;
-    } else this.ai.think(this, ship_id, ships, speed);
+    } else {
+        this.ai.think(this, ship_id, ships, speed);
+        this.target = this.ai.target;
+    }
 }
 
 // Draw the ship (and calculate ship stats)
@@ -59,7 +63,7 @@ class_ship.prototype.draw = function(context, speed, frags) {
             this.totalthrust += this.parts[i].getthrust();
             this.totalweight += this.parts[i].getweight();
             this.health += this.parts[i].health;
-            if(this.parts[i].load(speed) && this.fireprimary) this.parts[i].fireweapon(this, frags);
+            if(this.parts[i].load(speed) && this.fireprimary) this.parts[i].fireweapon(this, frags, this.target);
             this.parts[i].draw(context, { 'thrust': this.thrust });
         
         // Properly destroy a part
