@@ -103,7 +103,7 @@ class_frag.prototype.hit = function(ships, frags) {
         // Check if projectile is even near this ship
         // TODO: Check if projectile passed through a part during the frame
         tmp.relative = { 'x': ships[i].position.x - this.position.x, 'y': ships[i].position.y - this.position.y };
-        if(Math.abs(tmp.relative.x) < 50.0 && Math.abs(tmp.relative.y) < 50.0) { // TODO: Use calculated ship size
+        if(Math.abs(tmp.relative.x) < ships[i].size && Math.abs(tmp.relative.y) < ships[i].size) { // TODO: Use calculated ship size
             
             // Missiles explode at this point
             if(data.frags[this.name].type == "missile") {
@@ -128,7 +128,7 @@ class_frag.prototype.hit = function(ships, frags) {
             } else {
                 
                 // Find the ships closest part
-                tmp.closest_distance = 1000.0;
+                tmp.closest_distance = ships[i].size * 10.0;
                 tmp.closest_id = 0;
                 tmp.right = { 'x': -ships[i].normal.y, 'y': ships[i].normal.x };
                 tmp.closest_relative = { 'x': 1.0, 'y': 0.0 };

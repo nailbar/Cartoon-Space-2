@@ -15,6 +15,7 @@ function class_ship(name, opts) {
     this.parts = [];
     this.ai = new class_ai();
     this.target = 0;
+    this.size = 50.0;
     
     // Set ship position
     if(opts.position) this.position = { 'x': opts.position.x, 'y': opts.position.y };
@@ -30,6 +31,7 @@ function class_ship(name, opts) {
             data.ships[name].parts[i].parent
         ));
     }
+    this.recenter();
 }
 
 // Human controlled ship
@@ -54,6 +56,10 @@ class_ship.prototype.draw = function(context, speed, frags) {
     this.totalweight = 0;
     this.health = 0;
     var tmp = {};
+    
+c.beginPath();
+c.arc(0, 0, this.size, 0, 2.0 * Math.PI, false);
+c.stroke();
     
     // Loop through all parts except destroyed ones
     for(var i = 0; i < this.parts.length; i++) if(!this.parts[i].destroyed) {
@@ -80,9 +86,13 @@ class_ship.prototype.draw = function(context, speed, frags) {
                 'rotspeed': this.rotspeed,
                 'graphic': data.parts[this.parts[i].name].graphic
             }));
+            tmp.needs_recenter = true;
         }
     }
     context.restore();
+    
+    // Recenter ship if part is lost
+    if(tmp.needs_recenter) this.recenter();
 }
 
 // Move the ship
@@ -103,3 +113,60 @@ class_ship.prototype.move = function(speed) {
     this.velocity.y *= 1.0 - 0.05 * speed;
     this.rotspeed *= 1.0 - 0.01 * speed;
 }
+
+// Recenter and calculate ship size
+class_ship.prototype.recenter = function() {
+    var tmp = {
+        'min_x': 0,
+        'min_y': 0,
+        'max_x': 0,
+        'max_y': 0
+    };
+    
+    // Find the bounding box
+    for(var i = 0; i < this.parts.length; i++) if(!this.parts[i].destroyed) {
+        tmp.size = data.getpartsize(this.parts[i].name);
+        if(this.parts[i].position.x - tmp.size.x * 0.5 < tmp.min_x) tmp.min_x = this.parts[i].position.x - tmp.size.x * 0.5;
+        if(this.parts[i].position.y - tmp.size.y * 0.5 < tmp.min_y) tmp.min_y = this.parts[i].position.y - tmp.size.x * 0.5;
+        if(this.parts[i].position.x + tmp.size.x * 0.5 > tmp.max_x) tmp.max_x = this.parts[i].position.x + tmp.size.x * 0.5;
+        if(this.parts[i].position.y + tmp.size.y * 0.5 > tmp.max_y) tmp.max_y = this.parts[i].position.y + tmp.size.x * 0.5;
+    }
+    
+    // Recenter ship and all parts
+    tmp.center_x = (tmp.min_x + tmp.max_x) * 0.5;
+    tmp.center_y = (tmp.min_y + tmp.max_y) * 0.5;
+    for(var i = 0; i < this.parts.length; i++) {
+        this.parts[i].position.x -= tmp.center_x;
+        this.parts[i].position.y -= tmp.center_y;
+    }
+    tmp.right = { 'x': -this.normal.y, 'y': this.normal.x };
+    this.position.x += this.normal.x * tmp.center_x + tmp.right.x * tmp.center_y;
+    this.position.y += this.normal.y * tmp.center_x + tmp.right.y * tmp.center_y;
+    
+    // Calculate ship size
+    tmp.size_x = tmp.max_x - tmp.center_x;
+    tmp.size_y = tmp.max_y - tmp.center_y;
+    this.size = Math.sqrt(tmp.size_x * tmp.size_x + tmp.size_y * tmp.size_y);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

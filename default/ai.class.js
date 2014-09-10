@@ -94,34 +94,34 @@ class_ai.prototype.think = function(ship, ship_id, ships, speed) {
 
 // Calculate relative target data
 class_ai.prototype.calculate = function(ship, target) {
-        var tmp = { // Result data
-            'position': { 'x': target.x, 'y': target.y },
-            'relative_position': false,
-            'distance': false,
-            'normal': false,
-            'dot': false,
-            'dot_right': false
-        };
-            
-        // Get targets position relative to self
-        tmp.relative_position = { 'x': target.x - ship.position.x, 'y': target.y - ship.position.y };
-        
-        // Get distance and normal to target
-        tmp.distance = Math.sqrt(tmp.relative_position.x * tmp.relative_position.x + tmp.relative_position.y * tmp.relative_position.y);
-        
-        // Calculate normal towards target
-        if(tmp.distance) tmp.normal = { 'x': tmp.relative_position.x / tmp.distance, 'y': tmp.relative_position.y / tmp.distance };
-        else tmp.normal = { 'x': 1, 'y': 0 };
-        
-        // Get normal dot value to target
-        tmp.dot = ship.normal.x * tmp.normal.x + ship.normal.y * tmp.normal.y;
-        
-        // Get extruded dot value to target
-        tmp.dot_right = ship.normal.x * -tmp.normal.y + ship.normal.y * tmp.normal.x;
-        
-        // Done collecting data
-        return tmp;
-    }
+    var tmp = { // Result data
+        'position': { 'x': target.x, 'y': target.y },
+        'relative_position': false,
+        'distance': false,
+        'normal': false,
+        'dot': false,
+        'dot_right': false
+    };
+    
+    // Get targets position relative to self
+    tmp.relative_position = { 'x': target.x - ship.position.x, 'y': target.y - ship.position.y };
+    
+    // Get distance and normal to target
+    tmp.distance = Math.sqrt(tmp.relative_position.x * tmp.relative_position.x + tmp.relative_position.y * tmp.relative_position.y);
+    
+    // Calculate normal towards target
+    if(tmp.distance) tmp.normal = { 'x': tmp.relative_position.x / tmp.distance, 'y': tmp.relative_position.y / tmp.distance };
+    else tmp.normal = { 'x': 1, 'y': 0 };
+    
+    // Get normal dot value to target
+    tmp.dot = ship.normal.x * tmp.normal.x + ship.normal.y * tmp.normal.y;
+    
+    // Get extruded dot value to target
+    tmp.dot_right = ship.normal.x * -tmp.normal.y + ship.normal.y * tmp.normal.x;
+    
+    // Done collecting data
+    return tmp;
+}
 
 
 
