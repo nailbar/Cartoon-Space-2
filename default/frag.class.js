@@ -2,7 +2,7 @@
 // Default frag class
 //  * Parts, particles, projectiles and missiles and stuff
 function class_frag(name, position, opts) {
-    this.position = position;
+    this.position = { 'x': position.x, 'y': position.y };
     this.velocity = { 'x': 0, 'y': 0 };
     this.rotation = 0;
     this.rotspeed = 0;
@@ -58,6 +58,7 @@ class_frag.prototype.move = function(speed, ships) {
     if(this.time > 0) this.time -= speed;
     if(this.idle > 0) this.idle -= speed;
     
+    
     // Movement
     this.position.x += this.velocity.x * speed;
     this.position.y += this.velocity.y * speed;
@@ -107,7 +108,7 @@ class_frag.prototype.hit = function(ships, frags) {
             // Missiles explode at this point
             if(data.frags[this.name].type == "missile") {
                 this.time = 0;
-                for(var u = 0; u < 10; u++) {
+                for(var u = 0; u < 20; u++) {
                     tmp.rotation = Math.random() * Math.PI * 2.0;
                     tmp.speed = Math.random() * 15.0;
                     tmp.velocity = {
