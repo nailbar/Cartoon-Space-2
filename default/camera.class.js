@@ -20,8 +20,8 @@ class_camera.prototype.set = function(context, ships) {
     // Follow ship
     case 1:
         if(this.ship_id < ships.length) {
-            this.x = ships[this.ship_id].position.x;
-            this.y = ships[this.ship_id].position.y;
+            this.x = ships[this.ship_id].position.x + ships[this.ship_id].velocity.x * 10.0;
+            this.y = ships[this.ship_id].position.y + ships[this.ship_id].velocity.y * 10.0;
             this.zoom = 1.0 / (1.0 + (ships[this.ship_id].velocity.x * ships[this.ship_id].velocity.x + ships[this.ship_id].velocity.y * ships[this.ship_id].velocity.y) * 0.004);
         } else this.mode = 0;
         break;

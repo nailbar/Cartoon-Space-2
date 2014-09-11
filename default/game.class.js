@@ -7,6 +7,7 @@ function class_game(context) {
     this.frags = [];
     this.camera = new class_camera();
     this.controls = new class_controls();
+    this.hud = new class_hud();
     
     // Populate ships array with random ships
     var tmp = {};
@@ -28,11 +29,21 @@ class_game.prototype.loop = function(context, speed) {
     context.save();
     this.camera.set(context, this.ships);
     this.controls.tick(speed);
+    
+    // Follow next ship
     if(this.controls.nextship) {
         this.controls.nextship = 0;
         this.camera.ship_id++;
-        if(this.camera.ship_id > this.ships.length) this.camera.ship_id = 0;
     }
+    if(this.camera.ship_id > this.ships.length) this.camera.ship_id = 0;
+    
+    // Pick next target
+    if(this.controls.nexttarget && this.ships.length > 0) {
+        this.controls.nexttarget = 0;
+        this.ships[this.camera.ship_id].target = Math.floor(Math.random() * this.ships.length);
+        this.ships[this.camera.ship_id].ai.target = this.ships[this.camera.ship_id].target;
+        this.ships[this.camera.ship_id].ai.state = 1;
+    } else this.controls.nexttarget = 0;
     
     // Loop through ships
     for(var i = 0; i < this.ships.length; i++) {
@@ -73,6 +84,9 @@ class_game.prototype.loop = function(context, speed) {
             i--;
         }
     }
+    
+    // Draw hud
+    this.hud.draw(context, this.camera.ship_id, this.ships);
     
     // Done
     context.restore();

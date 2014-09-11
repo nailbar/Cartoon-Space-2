@@ -2,6 +2,7 @@
 // The ship class
 function class_ship(name, opts) {
     this.position = { 'x': 0, 'y': 0 };
+    this.oldpos = { 'x': 0, 'y': 0 };
     this.velocity = { 'x': 0, 'y': 0 };
     this.rotation = 0;
     this.rotspeed = 0;
@@ -15,7 +16,7 @@ function class_ship(name, opts) {
     this.parts = [];
     this.ai = new class_ai();
     this.target = 0;
-    this.size = 50.0;
+    this.size = 0;
     
     // Set ship position
     if(opts.position) this.position = { 'x': opts.position.x, 'y': opts.position.y };
@@ -57,10 +58,6 @@ class_ship.prototype.draw = function(context, speed, frags) {
     this.health = 0;
     var tmp = {};
     
-c.beginPath();
-c.arc(0, 0, this.size, 0, 2.0 * Math.PI, false);
-c.stroke();
-    
     // Loop through all parts except destroyed ones
     for(var i = 0; i < this.parts.length; i++) if(!this.parts[i].destroyed) {
         
@@ -92,11 +89,12 @@ c.stroke();
     context.restore();
     
     // Recenter ship if part is lost
-    if(tmp.needs_recenter) this.recenter();
+    if(tmp.needs_recenter || !this.size) this.recenter();
 }
 
 // Move the ship
 class_ship.prototype.move = function(speed) {
+    this.oldpos = { 'x': this.position.x, 'y': this.position.y };
     
     // Movement
     this.position.x += this.velocity.x * speed;
@@ -126,6 +124,7 @@ class_ship.prototype.recenter = function() {
     // Find the bounding box
     for(var i = 0; i < this.parts.length; i++) if(!this.parts[i].destroyed) {
         tmp.size = data.getpartsize(this.parts[i].name);
+        if(tmp.size.x + tmp.size.y == 0) return; // Image data not loaded yet
         if(this.parts[i].position.x - tmp.size.x * 0.5 < tmp.min_x) tmp.min_x = this.parts[i].position.x - tmp.size.x * 0.5;
         if(this.parts[i].position.y - tmp.size.y * 0.5 < tmp.min_y) tmp.min_y = this.parts[i].position.y - tmp.size.x * 0.5;
         if(this.parts[i].position.x + tmp.size.x * 0.5 > tmp.max_x) tmp.max_x = this.parts[i].position.x + tmp.size.x * 0.5;

@@ -9,6 +9,7 @@ function class_controls() {
     this.fire = 0;
     this.timer = 1000;
     this.nextship = 0;
+    this.nexttarget = 0;
 }
 
 class_controls.prototype.tick = function(speed) {
@@ -69,6 +70,9 @@ class_controls.prototype.keyup = function(e) {
         break;
      case 78: // N
         this.nextship = 1;
+        break;
+    case 84: // T
+        this.nexttarget = 1;
         break;
     }
 }

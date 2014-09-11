@@ -13,7 +13,7 @@ function init_content() {
     });
     data.addfrag("default_frag", "default_frag", "default/frag.png", {
         'type': "projectile",
-        'time': 40.0,
+        'time': 15.0,
         'damage': 1.5
     });
     data.addfrag("default_missile", "default_missile", "default/missile.png", {
